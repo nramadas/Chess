@@ -1,0 +1,5 @@
+require 'colorize'
+require_relative 'lib/general_pieces.rb'
+require_relative 'lib/specific_pieces.rb'
+require_relative 'lib/board.rb'
+require_relative 'lib/errors.rb'

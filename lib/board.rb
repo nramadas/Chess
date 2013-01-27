@@ -2,34 +2,52 @@ module Chess
 	class Board
 		ROW = [Rook, Knight, Bishop, Queen, King, Bishop, Knight, Rook]
 
-		attr_accessor :layout, :player1, :player2
+		attr_accessor :layout, :pieces
 
-		def initialize(player1, player2)
+		def initialize
 			@layout = Array.new(8) { Array.new(8) {nil} }
-			@player1, @player2 = player1, player2
+			@pieces = []
 		end
 
 		def self.convert_move(move)
 			letter, number = move[0], move[1].to_i
 
-			[('a'..'h').to_a.index(letter), (0..7).to_a.reverse[number-1]]
+			[(0..7).to_a.reverse[number-1], ('a'..'h').to_a.index(letter)]
 		end
 
 		def reset
 			# lay down pawns
 			(0..7).each do |col|
-				@player2.pieces << Pawn.new(1, col, :black, self)
-				@player1.pieces << Pawn.new(6, col, :white, self)
+				@pieces << Pawn.new(1, col, :black, self)
+				@pieces << Pawn.new(6, col, :white, self)
 			end
 
 			# lay down everything else
 			[0,7].each do |row|
 				color = (row == 0) ? :black : :white
-				player = (row == 0 ) ? @player2 : @player1
 				ROW.each_with_index do |piece_type, i|
-					player.pieces << piece_type.new(row, i, color, self)
+					@pieces << piece_type.new(row, i, color, self)
 				end
 			end
+		end
+
+		def dup
+			new_board = Board.new
+
+			layout.each_with_index do |row, row_index|
+				row.each_with_index do |col, col_index|
+					piece = @layout[row_index][col_index]
+					new_board.layout[row_index][col_index] = piece.dup if piece
+				end
+			end
+
+			new_board
+		end
+
+		def find_king(player)
+			@layout.flatten.select do |piece|
+				!piece.nil? && piece.is_a?(King) && piece.player == player
+			end.first
 		end
 
 		def print_layout

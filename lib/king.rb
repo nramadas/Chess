@@ -23,12 +23,29 @@ module Chess
 			@board.pieces.each do |piece|
 				next if piece.player == @player
 
-				if piece.is_valid_move?(@row, @col, @board)
+				if piece.is_valid_move?(@row, @col)
 					return true
 				end
 			end
 
 			false
+		end
+
+		def in_checkmate?
+			@board.pieces.each do |piece|
+				next unless piece.player == @player
+
+				piece.possible_positions(piece.move_type, piece.row, piece.col)
+						 .each do |pos|
+					row, col = pos[:coord]
+
+					begin
+						return false unless piece.move_causes_check?(row, col)
+					rescue BadMove
+						next
+					end
+				end
+			end
 		end
 
 	end

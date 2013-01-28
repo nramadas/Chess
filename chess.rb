@@ -72,10 +72,10 @@ module Chess
 					if end_pos == 'x'
 						piece.castle
 					else
-						unless piece.will_move_cause_check(end_pos[0], end_pos[1])
+						unless piece.move_causes_check?(end_pos[0], end_pos[1])
 							piece.move(end_pos[0], end_pos[1])
 						else
-							puts "Move will call check."
+							puts "Move will cause a check."
 							redo
 						end
 					end

@@ -133,8 +133,8 @@ describe "King".red do
 		it "doesn't let a player move into check" do
 			board.pieces << Chess::Rook.new(7, 3, :white, piece.board)
 			expect do
-				piece.move(0, 3)
-			end.to raise_error(Chess::BadMove)
+				piece.move_causes_check?(0, 3)
+			end.to be_true
 		end
 	end
 

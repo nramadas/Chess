@@ -42,8 +42,6 @@ module Chess
 
 	  def move(row, col)
 			if is_valid_move?(row, col)
-				# create a backup if a revert is needed
-				duplicate = @board.dup
 				old_row, old_col = @row, @col
 
 				# get rid of piece in player's collection if needed
@@ -61,6 +59,18 @@ module Chess
 			else
 				raise(BadMove, "That is not a valid move")
 			end
+		end
+
+		def move_causes_check?(row, col)
+			duplicate = @board.dup
+
+			duplicate.layout[@row][@col].move(row, col)
+
+			duplicate.find_king(@player).in_check?
+		end
+
+		def dup(board)
+			self.class.new(@row, @col, @player, board)
 		end
 
 		def castle
@@ -93,10 +103,6 @@ module Chess
 
 		def self_player
 			(@player == :white) ? :white : :black
-		end
-
-		def dup
-			self.class.new(@row, @col, @player, @board)
 		end
 
 		private

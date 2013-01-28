@@ -37,8 +37,7 @@ module Chess
 			new_board.layout.each_with_index do |row, r|
 				row.each_with_index do |col, c|
 					piece = @layout[r][c]
-					new_board.layout[r][c] = piece
-					new_board.pieces << piece if piece
+					piece.dup(new_board) if piece
 				end
 			end
 

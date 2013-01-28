@@ -63,7 +63,6 @@ module Chess
 
 		def move_causes_check?(row, col)
 			duplicate = @board.dup
-
 			duplicate.layout[@row][@col].move(row, col)
 
 			duplicate.find_king(@player).in_check?

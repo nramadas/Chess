@@ -23,7 +23,7 @@ module Chess
 			@board.pieces.each do |piece|
 				next if piece.player == @player
 
-				if piece.is_valid_move?(@row, @col)
+				if piece.is_valid_move?(@row, @col, @board)
 					return true
 				end
 			end
@@ -31,28 +31,5 @@ module Chess
 			false
 		end
 
-		def in_checkmate?
-			duplicate = @board.dup
-			pieces_copy = @board.pieces.dup
-
-			@board.pieces.each do |piece|
-				next unless piece.player == @player
-
-				piece.possible_positions(piece.move_type,
-																 piece.row,
-																 piece.col).each do |pos|
-					begin
-						piece.move(pos[:coord][0], pos[:coord][1])
-						@board.layout = duplicate.layout
-						@board.pieces = pieces_copy
-						return false
-					rescue BadMove
-						next
-					end
-				end
-			end
-
-			true
-		end
 	end
 end

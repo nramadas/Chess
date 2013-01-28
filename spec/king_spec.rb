@@ -126,12 +126,12 @@ describe "King".red do
 
 
 		it "correctly identifies check" do
-			Chess::Rook.new(7, 4, :white, piece.board)
+			board.pieces << Chess::Rook.new(7, 4, :white, piece.board)
 			piece.should be_in_check
 		end
 
 		it "doesn't let a player move into check" do
-			Chess::Rook.new(7, 3, :white, piece.board)
+			board.pieces << Chess::Rook.new(7, 3, :white, piece.board)
 			expect do
 				piece.move(0, 3)
 			end.to raise_error(Chess::BadMove)
@@ -144,8 +144,9 @@ describe "King".red do
 		subject(:piece) { Chess::King.new(0, 4, :black, board) }
 
 		it "correctly identifies checkmate" do
-			Chess::Rook.new(0, 0, :white, piece.board)
-			Chess::Rook.new(1, 0, :white, piece.board)
+			board.pieces << Chess::Rook.new(0, 0, :white, piece.board)
+			board.pieces << Chess::Rook.new(1, 0, :white, piece.board)
+			board.pieces << Chess::Pawn.new(7, 1, :black, piece.board)
 			piece.should be_in_checkmate
 		end
 	end

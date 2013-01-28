@@ -2,6 +2,7 @@
 # encoding: utf-8
 
 require 'colorize'
+require 'debugger'
 require_relative 'lib/pieces.rb'
 require_relative 'lib/pawn.rb'
 require_relative 'lib/rook.rb'
@@ -62,31 +63,36 @@ module Chess
 				end_pos = Board.convert_move(end_pos) unless end_pos == 'x'
 
 				piece = @board.layout[start_pos[0]][start_pos[1]]
-				unless piece.player == current_player
-					puts "Cannot move opponent's piece."
-					redo
-				end
 
 				begin
+					if piece && piece.player != current_player
+						puts "Cannot move opponent's piece.".red
+						redo
+					end
 					if end_pos == 'x'
 						piece.castle
 					else
-						piece.move(end_pos[0], end_pos[1])
+						unless piece.will_move_cause_check(end_pos[0], end_pos[1])
+							piece.move(end_pos[0], end_pos[1])
+						else
+							puts "Move will call check."
+							redo
+						end
 					end
 					current_player = piece.other_player
 				rescue BadMove => b
-					puts b.message
+					puts b.message.red
 				  puts
-				rescue NoMethodError
-					puts "No piece at start location."
-					puts
+				# rescue NoMethodError
+				# 	puts "No piece at start location.".red
+				# 	puts
 				end
 			end
 		end
 
 		def game_over
-			puts "Checkmate!"
-			puts "Game over"
+			puts "Checkmate!".red
+			puts "Game over".red
 		end
 	end
 end

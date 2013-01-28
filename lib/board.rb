@@ -18,15 +18,15 @@ module Chess
 		def reset
 			# lay down pawns
 			(0..7).each do |col|
-				@pieces << Pawn.new(1, col, :black, self)
-				@pieces << Pawn.new(6, col, :white, self)
+				Pawn.new(1, col, :black, self)
+				Pawn.new(6, col, :white, self)
 			end
 
 			# lay down everything else
 			[0,7].each do |row|
 				color = (row == 0) ? :black : :white
 				ROW.each_with_index do |piece_type, i|
-					@pieces << piece_type.new(row, i, color, self)
+					piece_type.new(row, i, color, self)
 				end
 			end
 		end
@@ -34,10 +34,11 @@ module Chess
 		def dup
 			new_board = Board.new
 
-			layout.each_with_index do |row, row_index|
-				row.each_with_index do |col, col_index|
-					piece = @layout[row_index][col_index]
-					new_board.layout[row_index][col_index] = piece.dup if piece
+			new_board.layout.each_with_index do |row, r|
+				row.each_with_index do |col, c|
+					piece = @layout[r][c]
+					new_board.layout[r][c] = piece
+					new_board.pieces << piece if piece
 				end
 			end
 
@@ -45,8 +46,8 @@ module Chess
 		end
 
 		def find_king(player)
-			@layout.flatten.select do |piece|
-				!piece.nil? && piece.is_a?(King) && piece.player == player
+			@pieces.select do |piece|
+				(piece.is_a?(King) && piece.player == player)
 			end.first
 		end
 

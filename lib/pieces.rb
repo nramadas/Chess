@@ -15,6 +15,7 @@ module Chess
 			@row, @col = row, col
 			@player, @board = player, board
 			@board.layout[@row][@col] = self
+			@board.pieces << self
 			@move_type = nil
 		end
 
@@ -57,16 +58,6 @@ module Chess
 
 				# set the move in the piece
 				@row, @col = row, col
-
-				# see if the move caused a check. if it did, reverse
-				king = @board.find_king(@player)
-
-				if king && king.in_check?
-					@board.layout = duplicate.layout
-					@board.pieces << opponent_piece if opponent_piece
-					@row, @col = old_row, old_col
-					raise(BadMove, "Cannot move into check")
-				end
 			else
 				raise(BadMove, "That is not a valid move")
 			end
@@ -98,6 +89,10 @@ module Chess
 
 		def other_player
 			(@player == :white) ? :black : :white
+		end
+
+		def self_player
+			(@player == :white) ? :white : :black
 		end
 
 		def dup
